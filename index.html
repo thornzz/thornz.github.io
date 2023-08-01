@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tarih Farkı Hesaplama</title>
+  <meta charset="UTF-8"> <!-- Türkçe karakter desteği için -->
+</head>
+<body>
+  <h1>Tarih Farkı Hesaplama</h1>
+  <label for="selectedDate">Tarih Seçin:</label>
+  <input type="date" id="selectedDate">
+
+  <button id="submitBtn">Hesapla</button>
+
+  <p id="result"></p>
+
+  <script>
+    // Hesaplama işlemini yapan fonksiyon (yukarıdaki JavaScript kodu ile aynı).
+    function dateDifference(startDate, endDate) {
+  const oneDay = 24 * 60 * 60 * 1000; // Bir günün milisaniye cinsinden değerini hesaplayıp bir değişkene atıyoruz.
+
+  // İki tarih arasındaki farkı milisaniye cinsinden hesaplayıp mutlak değerini alıyoruz (negatif sonuçları önlemek için).
+  const diffInMilliseconds = Math.abs(startDate - endDate);
+
+  // Milisaniye cinsinden hesaplanan farkı gün cinsinden bulmak için milisaniye değerini bir güne (24 saat) böleriz ve yuvarlarız.
+  const diffInDays = Math.round(diffInMilliseconds / oneDay);
+
+  // Farkı gün, ay ve yıl olarak ayrıştırmak için, önce yılları hesaplayıp çıkarıyoruz.
+  const years = Math.floor(diffInDays / 365);
+
+  // Yıl hesaplamasının kalan günleri bulup ay hesaplamasına geçiyoruz.
+  const remainingDays = diffInDays % 365;
+
+  // Ay hesaplamasını yapmak için, kalan günleri 30 güne böleriz ve yuvarlarız (ortalama bir ay 30 gün kabul edilir).
+  const months = Math.floor(remainingDays / 30);
+
+  // Son olarak, kalan günleri hesaplayarak gün sayısını buluyoruz.
+  const days = remainingDays % 30;
+
+  // Hesaplanan yıl, ay ve gün değerlerini bir nesne olarak döndürüyoruz.
+  return { years, months, days };
+}
+    // Tarihi gün, ay, yıl formatına dönüştüren yardımcı fonksiyon.
+    function formatDate(date) {
+      const day = date.getDate();
+      const month = date.getMonth() + 1; // Ay sıfırdan başlar, bu nedenle 1 ekleyerek gerçek değeri elde ediyoruz.
+      const year = date.getFullYear();
+
+      return `${day}.${month}.${year}`;
+    }
+
+    // Submit düğmesine tıklama olayını dinlemek için bu fonksiyonu çağırıyoruz.
+    function calculateDateDifference() {
+      const today = new Date(); // Bugünkü tarihi alıyoruz.
+      const selectedDate = new Date(document.getElementById("selectedDate").value); // Kullanıcı tarafından seçilen tarihi alıyoruz.
+
+      // dateDifference fonksiyonunu kullanarak bugünkü tarih ile seçilen tarih arasındaki farkı hesaplıyoruz.
+      const difference = dateDifference(today, selectedDate);
+
+      // Tarihleri gün, ay, yıl formatına dönüştürüyoruz.
+      const todayFormatted = formatDate(today);
+      const selectedDateFormatted = formatDate(selectedDate);
+
+      // Sonucu HTML içindeki p etiketi içine yazdırıyoruz.
+      const resultElement = document.getElementById("result");
+      resultElement.textContent = `Bugün: ${todayFormatted}, Seçilen Tarih: ${selectedDateFormatted}, Fark: ${difference.years} yıl, ${difference.months} ay, ${difference.days} gün`;
+    }
+
+    // Submit düğmesine tıklama olayını dinlemek için event listener ekliyoruz.
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.addEventListener("click", calculateDateDifference);
+  </script>
+</body>
+</html>
